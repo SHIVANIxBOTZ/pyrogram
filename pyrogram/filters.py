@@ -20,10 +20,62 @@ import inspect
 import re
 from typing import Callable, Union, List, Pattern
 import random 
-from pyrogram import Emojis
 import pyrogram
 from pyrogram import enums
 from pyrogram.types import Message, CallbackQuery, InlineQuery, InlineKeyboardMarkup, ReplyKeyboardMarkup, Update
+
+Emojis = [
+    "👍",
+    "❤️",
+    "🔥",
+    "🥰",
+    "👏",
+    "😀",
+    "🤔",
+    "🤯",
+    "😱",
+    "🤬",
+    "😢",
+    "🥳",
+    "🤩",
+    "🙏",
+    "✌️",
+    "🕊️",
+    "🤡",
+    "🤦",
+    "🤷",
+    "😍",
+    "🐳",
+    "💔",
+    "🌚",
+    "🌝",
+    "🌭",
+    "💯",
+    "😂",
+    "⚡",
+    "🏆",
+    "🙁",
+    "😐",
+    "🍓",
+    "🍾",
+    "👆",
+    "😈",
+    "💤",
+    "😭",
+    "🤓",
+    "👻",
+    "👨‍💻",
+    "👀",
+    "🎃",
+    "🙈",
+    "😇",
+    "🤝",
+    "✍️",
+    "🙂",
+    "🤕",
+    "🎅",
+    "🎄"
+]
 
 
 class Filter:
