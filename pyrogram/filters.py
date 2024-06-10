@@ -911,7 +911,7 @@ def command(commands: Union[str, List[str]], prefixes: Union[str, List[str]] = [
 
                await message.react("⚡")  # Reacting with ⚡ emoji
                return True
-       return False
+      return False
 
 
     commands = commands if isinstance(commands, list) else [commands]
