@@ -888,7 +888,7 @@ def command(commands: Union[str, List[str]], prefixes: Union[str, List[str]] = [
 
         for prefix in flt.prefixes:
             if not text.startswith(prefix):
-            continue
+                continue
 
             without_prefix = text[len(prefix):]
 
