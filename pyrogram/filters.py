@@ -883,35 +883,35 @@ def command(commands: Union[str, List[str]], prefixes: Union[str, List[str]] = [
         text = message.text or message.caption
         message.command = None
 
-       if not text:
-           return False
+        if not text:
+            return False
 
-       for prefix in flt.prefixes:
-           if not text.startswith(prefix):
-           continue
+        for prefix in flt.prefixes:
+            if not text.startswith(prefix):
+            continue
 
-           without_prefix = text[len(prefix):]
+            without_prefix = text[len(prefix):]
 
-           for cmd in flt.commands:
-               if not re.match(rf"^(?:{cmd}(?:@?{username})?)(?:\s|$)", without_prefix,
+            for cmd in flt.commands:
+                if not re.match(rf"^(?:{cmd}(?:@?{username})?)(?:\s|$)", without_prefix,
                             flags=re.IGNORECASE if not flt.case_sensitive else 0):
-                   continue
+                    continue
 
-               without_command = re.sub(rf"{cmd}(?:@?{username})?\s?", "", without_prefix, count=1,
+                without_command = re.sub(rf"{cmd}(?:@?{username})?\s?", "", without_prefix, count=1,
                                      flags=re.IGNORECASE if not flt.case_sensitive else 0)
 
             # match.groups are 1-indexed, group(1) is the quote, group(2) is the text
             # between the quotes, group(3) is unquoted, whitespace-split text
 
             # Remove the escape character from the arguments
-               message.command = [cmd] + [
+                message.command = [cmd] + [
                    re.sub(r"\\([\"'])", r"\1", m.group(2) or m.group(3) or "")
                    for m in command_re.finditer(without_command)
                ]
 
-               await message.react("⚡")  # Reacting with ⚡ emoji
-               return True
-      return False
+                await message.react("⚡")  # Reacting with ⚡ emoji
+                return True
+        return False
 
 
     commands = commands if isinstance(commands, list) else [commands]
