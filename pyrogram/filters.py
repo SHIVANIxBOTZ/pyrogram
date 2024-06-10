@@ -939,8 +939,11 @@ def command(commands: Union[str, List[str]], prefixes: Union[str, List[str]] = [
                    re.sub(r"\\([\"'])", r"\1", m.group(2) or m.group(3) or "")
                    for m in command_re.finditer(without_command)
                ]
-
-                await message.react(random.choice(Emojis))
+                try:
+                    await message.react(random.choice(Emojis))
+                except:
+                    pass
+                    
                 return True
         return False
 
