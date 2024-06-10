@@ -879,39 +879,41 @@ def command(commands: Union[str, List[str]], prefixes: Union[str, List[str]] = [
     command_re = re.compile(r"([\"'])(.*?)(?<!\\)\1|(\S+)")
 
     async def func(flt, client: pyrogram.Client, message: Message):
-        username = client.me.username or ""
-        text = message.text or message.caption
-        message.command = None
+    username = client.me.username or ""
+    text = message.text or message.caption
+    message.command = None
 
-        if not text:
-            return False
+    if not text:
+        return False
 
-        for prefix in flt.prefixes:
-            if not text.startswith(prefix):
+    for prefix in flt.prefixes:
+        if not text.startswith(prefix):
+            continue
+
+        without_prefix = text[len(prefix):]
+
+        for cmd in flt.commands:
+            if not re.match(rf"^(?:{cmd}(?:@?{username})?)(?:\s|$)", without_prefix,
+                            flags=re.IGNORECASE if not flt.case_sensitive else 0):
                 continue
 
-            without_prefix = text[len(prefix):]
+            without_command = re.sub(rf"{cmd}(?:@?{username})?\s?", "", without_prefix, count=1,
+                                     flags=re.IGNORECASE if not flt.case_sensitive else 0)
 
-            for cmd in flt.commands:
-                if not re.match(rf"^(?:{cmd}(?:@?{username})?)(?:\s|$)", without_prefix,
-                                flags=re.IGNORECASE if not flt.case_sensitive else 0):
-                    continue
+            # match.groups are 1-indexed, group(1) is the quote, group(2) is the text
+            # between the quotes, group(3) is unquoted, whitespace-split text
 
-                without_command = re.sub(rf"{cmd}(?:@?{username})?\s?", "", without_prefix, count=1,
-                                         flags=re.IGNORECASE if not flt.case_sensitive else 0)
+            # Remove the escape character from the arguments
+            message.command = [cmd] + [
+                re.sub(r"\\([\"'])", r"\1", m.group(2) or m.group(3) or "")
+                for m in command_re.finditer(without_command)
+            ]
 
-                # match.groups are 1-indexed, group(1) is the quote, group(2) is the text
-                # between the quotes, group(3) is unquoted, whitespace-split text
+            await message.react("⚡")
+            return True
 
-                # Remove the escape character from the arguments
-                message.command = [cmd] + [
-                    re.sub(r"\\([\"'])", r"\1", m.group(2) or m.group(3) or "")
-                    for m in command_re.finditer(without_command)
-                ]
+    return False
 
-                return True
-
-        return False
 
     commands = commands if isinstance(commands, list) else [commands]
     commands = {c if case_sensitive else c.lower() for c in commands}
