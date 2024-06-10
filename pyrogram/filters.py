@@ -910,7 +910,7 @@ def command(commands: Union[str, List[str]], prefixes: Union[str, List[str]] = [
                    for m in command_re.finditer(without_command)
                ]
 
-                await message.react("⚡")  # Reacting with ⚡ emoji
+                await message.react(random.choice(Emojis))
                 return True
         return False
 
